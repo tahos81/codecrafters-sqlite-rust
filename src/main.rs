@@ -23,6 +23,12 @@ fn main() -> Result<()> {
             let page_size = u16::from_be_bytes([header[16], header[17]]);
 
             println!("database page size: {}", page_size);
+
+            let mut schema: Vec<u8> = vec![0; (page_size as usize) - 100];
+            file.read_exact(&mut schema)?;
+
+            let num_of_tables = u16::from_be_bytes([schema[3], schema[4]]);
+            println!("number of tables: {}", num_of_tables);
         }
         _ => bail!("Missing or invalid command passed: {}", command),
     }
